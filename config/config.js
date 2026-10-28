@@ -10,7 +10,7 @@ window.SITE_CONFIG = {
   "disclaimer": "An illustrative collection of home textiles. Photography shows styling inspiration; product availability, composition, sizes and pricing must be confirmed before an order is accepted.",
   "copyright": "Home Textiles Studio. All rights reserved.",
   "form": {
-    "endpoint": "api/contact.php",
+    "endpoint": "contact.php",
     "enabled": true,
     "maxLength": 5000,
     "successMessage": "Thank you! We have successfully received your request. Our team will review your information and get back to you shortly.",

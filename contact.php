@@ -11,7 +11,7 @@ function respond(int $status, array $data): never {
 if (!in_array($_SERVER['REQUEST_METHOD'] ?? '', ['GET', 'POST'], true)) {
     header('Allow: GET, POST'); respond(405, ['success'=>false, 'message'=>'Method not allowed.']);
 }
-$configPath = dirname(__DIR__) . '/config.js';
+$configPath = __DIR__ . '/config/config.js';
 if (!is_file($configPath)) respond(503, ['success'=>false, 'message'=>'The contact service is not configured.']);
 try {
     $configSource = file_get_contents($configPath);
