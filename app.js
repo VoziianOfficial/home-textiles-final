@@ -142,7 +142,7 @@ const art=$('.size-illustration');art.innerHTML=`<div class="measure-object">${i
 const garment=$('.garment-section>img');if(garment)garment.src='assets/'+v.garment;
 $$('.large-swatch').forEach((s,i)=>{s.style.background='none';s.innerHTML=img(v.swatches[i],v.swatchNames[i]);const row=s.closest('.swatch-row');$('strong',row).textContent=v.swatchNames[i];$('small',row).textContent='Explore the colour, weave and feel.';row.dataset.tone=v.swatchNames[i];});
 const studio=$('.workshop-images');if(studio)studio.innerHTML=v.workshopPhotos.map((p,i)=>img(p,c.name+' craft study','workshop-photo '+(i?'':'active'))).join('');
-if(v.cubePhotos){$('.collection-hero-photo').innerHTML=`<div class="cube-scene" aria-label="${esc(c.name)} in four settings"><div class="photo-cube">${v.cubePhotos.map((p,i)=>`<div class="cube-face face-${i}">${img(p,c.name+' setting '+(i+1))}</div>`).join('')}</div></div>`;$('.collection-hero').classList.add('cube-hero');}
+if(v.cubePhotos){$('.collection-hero-photo').innerHTML=`<div class="cube-scene" aria-label="${esc(c.name)} in four settings"><div class="photo-cube">${v.cubePhotos.map((p,i)=>`<div class="cube-face face-${i}">${img(p,c.name+' setting '+(i+1)).replace('loading="lazy"','loading="eager"')}</div>`).join('')}</div></div>`;$('.collection-hero').classList.add('cube-hero');}
 if(c.slug==='living-room'){$('.concierge>div:last-child>img').src='assets/'+ui.conciergePhoto;}
 }
 const circles=$('.fabric-circles');if(circles){$('h2',circles).textContent=ui.fabricTitle;const set=c?C.collectionDesign[c.slug]:ui;$$('a',circles).forEach((a,i)=>{$('img',a).src='assets/'+set.circlePhotos[i];$('img',a).alt=set.circleNames[i];$('h3',a).textContent=set.circleNames[i];});}
@@ -157,7 +157,17 @@ const suggest=()=>{let q=input.value.trim().toLowerCase();const found=entries.fi
 input.addEventListener('focus',suggest);input.addEventListener('input',suggest);
 input.addEventListener('keydown',e=>{if(e.key==='Escape'){close();return;}if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();if(box.hidden)suggest();const links=$$('a',box);if(!links.length)return;selected=(selected+(e.key==='ArrowDown'?1:-1)+links.length)%links.length;links.forEach((a,i)=>a.classList.toggle('selected',i===selected));}else if(e.key==='Enter'&&selected>=0){e.preventDefault();$$('a',box)[selected].click();}});
 form.addEventListener('focusout',()=>setTimeout(()=>{if(!form.contains(document.activeElement))close();},0));document.addEventListener('click',e=>{if(!form.contains(e.target))close();});form.addEventListener('submit',close);
-$$('.cube-scene').forEach(scene=>{const cube=$('.photo-cube',scene);new ResizeObserver(entries=>scene.style.setProperty('--cube-depth',entries[0].contentRect.width/2+'px')).observe(scene);let turn=0,visible=false;new IntersectionObserver(e=>visible=e[0].isIntersecting).observe(scene);if(!matchMedia('(prefers-reduced-motion: reduce)').matches)setInterval(()=>{if(visible&&!document.hidden&&!scene.matches(':hover'))cube.style.transform=`translateZ(calc(-1 * var(--cube-depth))) rotateY(${--turn*90}deg)`;},C.appearance.cubeInterval);});
+$$('.cube-scene').forEach(scene=>{
+const cube=$('.photo-cube',scene);
+new ResizeObserver(entries=>scene.style.setProperty('--cube-depth',entries[0].contentRect.width/2+'px')).observe(scene);
+if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+let turn=0,visible=false,started=false;
+const rotate=()=>{cube.style.transform=`translateZ(calc(-1 * var(--cube-depth))) rotateY(${--turn*90}deg)`;};
+const start=()=>{if(started||!visible||document.hidden)return;started=true;requestAnimationFrame(()=>requestAnimationFrame(rotate));setInterval(()=>{if(visible&&!document.hidden&&!scene.matches(':hover'))rotate();},C.appearance.cubeInterval);};
+new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;start();}).observe(scene);
+document.addEventListener('visibilitychange',start);
+window.addEventListener('pageshow',event=>{if(event.persisted&&visible&&!document.hidden)rotate();});
+});
 }
 function applyConfiguredContent(){
 Object.entries(C.theme||{}).forEach(([k,v])=>document.documentElement.style.setProperty('--'+k,v));

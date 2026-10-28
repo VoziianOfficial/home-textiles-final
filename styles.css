@@ -38,3 +38,15 @@
 .collection-tablecloths.hero-variant-2 .collection-heading{padding:0}
 .collection-tablecloths .collection-hero-photo img{height:270px}
 }
+
+/* Wider rotating photos for Table Runners and Dining Room. */
+.collection-hero.cube-hero{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)}
+.cube-hero .cube-scene{max-width:650px;aspect-ratio:1.25}
+.cube-hero .photo-cube{transition-duration:1.2s}
+@media(max-width:1100px){.cube-hero .cube-scene{max-width:540px}}
+@media(max-width:700px){
+.collection-hero.cube-hero{grid-template-columns:minmax(0,1fr)}
+.cube-hero .collection-hero-photo{padding-inline:0}
+.cube-hero .cube-scene{max-width:440px}
+}
+@media(prefers-reduced-motion:reduce){.cube-hero .photo-cube{transition:none}}

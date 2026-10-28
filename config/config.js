@@ -700,7 +700,7 @@ window.SITE_CONFIG = {
     ],
     "conciergePhoto": "concierge-v2.avif",
     "legalPhoto": "basket-yarn.webp",
-    "cubeInterval": 4200
+    "cubeInterval": 2500
   },
   "collectionDesign": {
     "cushion-covers": {
